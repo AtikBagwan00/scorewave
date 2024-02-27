@@ -1,25 +1,42 @@
-import logo from './logo.svg';
-import './App.css';
-
+import React, { useEffect, useState } from 'react';
+import Navbar from "./componants/Navbar";
+import MyCard from "./componants/MyCard";
+import { Grid, Typography } from '@mui/material';
+import { getMatches } from "./componants/api/Api";
+import "./App.css";
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+    const [matches, setMatches] = useState([]);
+
+    useEffect(() => {
+        async function fetchData() {
+            try {
+                const data = await getMatches();
+                console.log('Fetched data:', data.data);
+
+                setMatches(data.data);
+            } catch (error) {
+                console.error('Unable to fetch matches:', error);
+            }
+        }
+        fetchData();
+    }, []);
+
+    return (
+        <div className=''>
+            <Navbar />
+            <Typography  style={{ marginTop: 20 , textAlign: "center"}} variant="h3">This is Live Score Web site</Typography>
+
+            <Grid container>
+                <Grid sm="3">
+                </Grid>
+                <Grid sm="6">
+                    {matches.map((match) => (
+                        <MyCard key={match.id} match={match} />
+                    ))}
+                </Grid>
+            </Grid>
+        </div>
+    );
 }
 
 export default App;
